@@ -10,6 +10,10 @@
 
 # include "helper.hpp"
 
+Job::Job(int id, int dur) : jobID(id), duration(dur) {}
+
+
+// ====== GIVEN =========
 int check_arg (char *buffer)
 {
   int i, num = 0, temp = 0;
@@ -48,6 +52,18 @@ void sem_wait (int id, short unsigned int num)
     {num, -1, SEM_UNDO}
   };
   semop (id, op, 1);
+}
+
+int sem_timed_wait (int id, short unsigned int num,const int time)
+{
+	const struct timespec time_s={time,0};
+  struct sembuf op[] = {
+    {num, -1, SEM_UNDO}
+  };
+  if (semtimedop (id, op, 1, &time_s)<0)
+		return -1;
+	else
+		return 0;
 }
 
 void sem_signal (int id, short unsigned int num)
